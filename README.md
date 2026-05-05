@@ -68,6 +68,12 @@ yarn build
 
 ## Deploy
 
+### Live URLs
+
+- Web: https://reserve-app-web.vercel.app/
+- API: https://reserve-app-djf2.onrender.com
+- Database: Supabase Postgres
+
 ### Web
 
 Deploy `apps/web` to Vercel.
@@ -82,7 +88,7 @@ Deploy `apps/api` to Render.
 
 - Root directory: repository root
 - Install command: `yarn install`
-- Build command: `yarn turbo run build --filter=api`
+- Build command: `yarn install --production=false && yarn turbo run build --filter=api`
 - Start command: `yarn workspace api start:prod`
 
 ### Database
