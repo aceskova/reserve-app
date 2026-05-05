@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: reservations
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: reserve_user
+      POSTGRES_PASSWORD: reserve_pass
+      POSTGRES_DB: reserve_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
