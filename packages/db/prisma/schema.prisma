@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum Role {
+  client
+  trainer
+}
+
+// TrainingSession
+// id (uuid)
+// title
+// description
+// trainerId (FK -> User)
+// startsAtUtc
+// endsAtUtc
+// capacity
+// //location
+// createdAt
+// updatedAt
+
+// Reservation
+// id (uuid)
+// userId (FK -> User)
+// trainingSessionId (FK -> TrainingSession)
+// status (active | cancelled)
+// cancelledAt
+// createdAt
+// updatedAt
+
+// DeviceToken
+// id (uuid)
+// userId (FK -> User)
+// token (unique)
+// platform (ios | android | web)
+// isActive
+// createdAt
+// updatedAt
+
+// NotificationLog
+// id (uuid)
+// reservationId (FK -> Reservation)
+// channel (email | push)
+// type (reminder_48h | late_immediate)
+// status (pending | sent | failed)
+// scheduledForUtc
+// sentAtUtc
+// errorMessage
+// retryCount
+// createdAt
+// updatedAt
+
+// Vztahy mezi entitami
+// User 1:N Reservation
+// User 1:N DeviceToken
+// User 1:N TrainingSession jako trainer
+// TrainingSession 1:N Reservation
+// Reservation 1:N NotificationLog
