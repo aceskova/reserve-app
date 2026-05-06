@@ -13,6 +13,7 @@
     "api:check-types": "yarn workspace api check-types",
     "api:lint": "yarn workspace api lint",
     "api:build": "yarn workspace api build",
+    "api:dev": "yarn workspace api dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"

@@ -89,11 +89,15 @@ Deploy `apps/api` to Render.
 
 Use Supabase Postgres and set `DATABASE_URL` in the API deployment environment.
 
-## First Commit Goal
+## API Documentation
 
-The first commit is intended to be a stable hello-world baseline:
+The NestJS API exposes an OpenAPI specification through Swagger UI.
 
-- Web app builds
-- API app builds
-- Prisma package is ready for future migrations
-- Deployment targets are documented
+- Local: `http://localhost:3000/docs`
+- Production: `https://reserve-app-djf2.onrender.com/docs`
+
+The documented API routes are versioned under `/v1`, for example:
+
+```txt
+POST /v1/auth/register
+```
