@@ -18,8 +18,9 @@ model User {
 }
 
 enum Role {
-  client
-  trainer
+  USER
+  TRAINER
+  ADMIN
 }
 
 // TrainingSession

@@ -6,6 +6,9 @@
     "dev": "turbo run dev",
     "docker:up": "docker compose up",
     "docker:down": "docker compose down",
+    "db:migrate": "yarn workspace @repo/db migrate",
+    "db:generate": "yarn workspace @repo/db generate",
+    "db:studio": "yarn workspace @repo/db studio",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
