@@ -1,12 +1,32 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { User } from '@repo/db';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService) {}
+  private toPublicUser(user: User) {
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+  }
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async register(dto: RegisterDto) {
     const existingUser = await this.prisma.user.findUnique({
@@ -28,12 +48,7 @@ export class AuthService {
     });
 
     return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
+      user: this.toPublicUser(user),
     };
   }
 
@@ -43,7 +58,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new ConflictException('Invalid email or password');
+      throw new UnauthorizedException('Invalid email or password');
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -52,16 +67,18 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      throw new ConflictException('Invalid email or password');
+      throw new UnauthorizedException('Invalid email or password');
     }
 
-    return {
-      id: user.id,
+    const accessToken = await this.jwtService.signAsync({
+      sub: user.id,
       email: user.email,
-      name: user.name,
       role: user.role,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
+    });
+
+    return {
+      accessToken,
+      user: this.toPublicUser(user),
     };
   }
 }
