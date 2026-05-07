@@ -7,6 +7,7 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
+import { LoginDto } from './dto/login.dto';
 
 @ApiTags('auth')
 @ApiExtraModels(RegisterDto)
@@ -30,5 +31,23 @@ export class AuthController {
   })
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
+  }
+
+  @ApiExtraModels(LoginDto)
+  @Post('login')
+  @ApiBody({
+    schema: { $ref: getSchemaPath(LoginDto) },
+    examples: {
+      default: {
+        summary: 'Login a user',
+        value: {
+          email: 'test@example.com',
+          password: 'secret123',
+        },
+      },
+    },
+  })
+  login(@Body() dto: LoginDto) {
+    return this.authService.login(dto);
   }
 }
