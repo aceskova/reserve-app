@@ -12,6 +12,8 @@
     "db:studio": "yarn workspace @repo/db studio",
     "api:check-types": "yarn workspace api check-types",
     "api:lint": "yarn workspace api lint",
+    "api:lint:fix": "yarn workspace api lint --fix",
+    "api:format": "yarn workspace api format",
     "api:build": "yarn workspace api build",
     "api:dev": "yarn workspace api dev",
     "lint": "turbo run lint",
