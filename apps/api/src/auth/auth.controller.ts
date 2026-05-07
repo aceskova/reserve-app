@@ -3,14 +3,17 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import {
   ApiBody,
+  ApiCreatedResponse,
   ApiExtraModels,
+  ApiOkResponse,
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
+import { LoginResponseDto, RegisterResponseDto } from './dto/auth-response.dto';
 
 @ApiTags('auth')
-@ApiExtraModels(RegisterDto)
+@ApiExtraModels(RegisterDto, LoginDto, RegisterResponseDto, LoginResponseDto)
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -29,11 +32,14 @@ export class AuthController {
       },
     },
   })
+  @ApiCreatedResponse({
+    description: 'User registered successfully.',
+    type: RegisterResponseDto,
+  })
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }
 
-  @ApiExtraModels(LoginDto)
   @Post('login')
   @ApiBody({
     schema: { $ref: getSchemaPath(LoginDto) },
@@ -46,6 +52,10 @@ export class AuthController {
         },
       },
     },
+  })
+  @ApiOkResponse({
+    description: 'User authenticated successfully. Returns a JWT access token.',
+    type: LoginResponseDto,
   })
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);

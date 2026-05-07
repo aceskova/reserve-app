@@ -100,4 +100,28 @@ The documented API routes are versioned under `/v1`, for example:
 
 ```txt
 POST /v1/auth/register
+POST /v1/auth/login
+```
+
+## Auth
+
+The API currently supports email and password authentication.
+
+- `POST /v1/auth/register` creates a user and stores a hashed password.
+- `POST /v1/auth/login` verifies credentials and returns a JWT access token.
+
+Successful login response:
+
+```json
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example.signature",
+  "user": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "email": "test@example.com",
+    "name": "Test User",
+    "role": "USER",
+    "createdAt": "2026-05-07T10:00:00.000Z",
+    "updatedAt": "2026-05-07T10:00:00.000Z"
+  }
+}
 ```
