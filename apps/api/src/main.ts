@@ -1,9 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.use(cookieParser());
+
+  const corsOrigins = process.env.CORS_ORIGINS?.split(',').map((origin) =>
+    origin.trim(),
+  );
+
+  app.enableCors({
+    origin: corsOrigins,
+    credentials: true,
+  });
 
   app.setGlobalPrefix('v1');
 
@@ -11,6 +23,8 @@ async function bootstrap() {
     .setTitle('Reserve App API')
     .setDescription('API for the Reserve app')
     .setVersion('1.0')
+    .addBearerAuth()
+    .addCookieAuth('accessToken', undefined, 'accessTokenCookie')
     .addTag('reserve')
     .build();
   const document = SwaggerModule.createDocument(app, config);

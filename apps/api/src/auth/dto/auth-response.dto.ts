@@ -25,6 +25,11 @@ export class RegisterResponseDto {
   user!: PublicUserDto;
 }
 
+export class MeResponseDto {
+  @ApiProperty({ type: PublicUserDto })
+  user!: PublicUserDto;
+}
+
 export class LoginResponseDto {
   @ApiProperty({
     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example.signature',
