@@ -18,7 +18,7 @@
     "api:dev": "yarn workspace api dev",
     "web:check-types": "yarn workspace web check-types",
     "web:lint": "yarn workspace web lint",
-    "web:lint:fix": "yarn workspace web lint --fix",
+    "web:lint:fix": "yarn workspace web lint:fix",
     "web:format": "yarn workspace web format",
     "web:build": "yarn workspace web build",
     "web:dev": "yarn workspace web dev",

@@ -1,5 +1,5 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
+import { getApiUrl } from "./env";
 export type LoginInput = {
   email: string;
   password: string;
@@ -20,7 +20,7 @@ export type LoginResponse = {
 };
 
 export async function loginUser(input: LoginInput): Promise<LoginResponse> {
-  const response = await fetch(`${API_URL}/v1/auth/login`, {
+  const response = await fetch(`${getApiUrl()}/v1/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

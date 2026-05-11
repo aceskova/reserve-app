@@ -109,9 +109,11 @@ GET /v1/auth/me
 The API currently supports email and password authentication.
 
 - `POST /v1/auth/register` creates a user and stores a hashed password.
-- `POST /v1/auth/login` verifies credentials, returns a JWT access token,
-  and sets an `accessToken` HTTP-only cookie.
+- `POST /v1/auth/login` verifies credentials and returns a JWT access token.
 - `GET /v1/auth/me` verifies a JWT access token and returns the current user.
+
+Web clients should store the access token in an HTTP-only cookie from the Next.js server layer.
+API and mobile clients can send the token with the `Authorization` header.
 
 Successful login response:
 
@@ -138,7 +140,7 @@ Mobile, API clients, and manual Swagger/Postman tests can use the
 Authorization: Bearer <accessToken>
 ```
 
-Browser-based web clients can use the HTTP-only cookie set by login:
+Browser-based web clients can use the HTTP-only cookie set by the Next.js server action after login:
 
 ```txt
 Cookie: accessToken=<accessToken>
