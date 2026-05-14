@@ -1,21 +1,9 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getApiUrl } from "../../lib/env";
-
-
-type LoginResponse = {
-  accessToken: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-    role: string;
-    createdAt: string;
-    updatedAt: string;
-  };
-};
+import type { LoginResponseDto } from "@repo/api-contracts";
+import { cookies } from "next/headers";
 
 export type LoginActionState = {
   error?: string;
@@ -43,7 +31,7 @@ export async function loginAction(_prevState: LoginActionState, formData: FormDa
     return { errors };
   }
 
-  const response = await fetch(`${getApiUrl()}/v1/auth/login`, {
+  const response = await fetch(`${ getApiUrl() }/v1/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -55,7 +43,7 @@ export async function loginAction(_prevState: LoginActionState, formData: FormDa
     return { error: "Prihlaseni se nepodarilo." };
   }
 
-  const result = (await response.json()) as LoginResponse;
+  const result = (await response.json()) as LoginResponseDto;
 
   const cookieStore = await cookies();
 
@@ -69,3 +57,4 @@ export async function loginAction(_prevState: LoginActionState, formData: FormDa
 
   redirect("/dashboard");
 }
+

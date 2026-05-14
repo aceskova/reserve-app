@@ -32,6 +32,7 @@
     "@nestjs/swagger": "^11.4.2",
     "@prisma/adapter-pg": "^7.8.0",
     "@repo/db": "*",
+    "@repo/api-contracts": "*",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "passport": "^0.7.0",

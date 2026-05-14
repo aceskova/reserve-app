@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import type {
+  LoginResponseDto as LoginResponseContract,
+  MeResponseDto as MeResponseContract,
+  PublicUserDto as PublicUserContract,
+  RegisterResponseDto as RegisterResponseContract,
+} from '@repo/api-contracts';
 
-export class PublicUserDto {
+export class PublicUserDto implements PublicUserContract {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
   id!: string;
 
@@ -11,26 +17,26 @@ export class PublicUserDto {
   name!: string;
 
   @ApiProperty({ example: 'USER' })
-  role!: string;
+  role!: 'USER' | 'TRAINER' | 'ADMIN';
 
   @ApiProperty({ example: '2026-05-07T10:00:00.000Z' })
-  createdAt!: Date;
+  createdAt!: string;
 
   @ApiProperty({ example: '2026-05-07T10:00:00.000Z' })
-  updatedAt!: Date;
+  updatedAt!: string;
 }
 
-export class RegisterResponseDto {
+export class RegisterResponseDto implements RegisterResponseContract {
   @ApiProperty({ type: PublicUserDto })
   user!: PublicUserDto;
 }
 
-export class MeResponseDto {
+export class MeResponseDto implements MeResponseContract {
   @ApiProperty({ type: PublicUserDto })
   user!: PublicUserDto;
 }
 
-export class LoginResponseDto {
+export class LoginResponseDto implements LoginResponseContract {
   @ApiProperty({
     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example.signature',
   })
