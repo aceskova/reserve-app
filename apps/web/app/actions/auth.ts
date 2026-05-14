@@ -58,3 +58,10 @@ export async function loginAction(_prevState: LoginActionState, formData: FormDa
   redirect("/dashboard");
 }
 
+export async function logoutAction() {
+  const cookieStore = await cookies();
+
+  cookieStore.delete("accessToken");
+
+  redirect("/login");
+}
