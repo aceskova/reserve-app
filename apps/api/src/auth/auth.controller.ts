@@ -1,19 +1,34 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import {
+  ApiBearerAuth,
   ApiBody,
+  ApiCookieAuth,
   ApiCreatedResponse,
   ApiExtraModels,
   ApiOkResponse,
   ApiTags,
+  ApiUnauthorizedResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
-import { LoginResponseDto, RegisterResponseDto } from './dto/auth-response.dto';
+import {
+  LoginResponseDto,
+  MeResponseDto,
+  RegisterResponseDto,
+} from './dto/auth-response.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from './types/jwt-payload';
 
 @ApiTags('auth')
-@ApiExtraModels(RegisterDto, LoginDto, RegisterResponseDto, LoginResponseDto)
+@ApiExtraModels(
+  RegisterDto,
+  LoginDto,
+  RegisterResponseDto,
+  LoginResponseDto,
+  MeResponseDto,
+)
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -59,5 +74,20 @@ export class AuthController {
   })
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiCookieAuth('accessTokenCookie')
+  @ApiOkResponse({
+    description: 'Returns the currently authenticated user.',
+    type: MeResponseDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Missing, invalid, or expired JWT access token.',
+  })
+  me(@Req() request: AuthenticatedRequest) {
+    return this.authService.getMe(request.user.sub);
   }
 }

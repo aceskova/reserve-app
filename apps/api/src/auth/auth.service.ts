@@ -9,17 +9,22 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { User } from '@repo/db';
 import { JwtService } from '@nestjs/jwt';
+import {
+  LoginResponseDto,
+  MeResponseDto,
+  PublicUserDto,
+} from './dto/auth-response.dto';
 
 @Injectable()
 export class AuthService {
-  private toPublicUser(user: User) {
+  private toPublicUser(user: User): PublicUserDto {
     return {
       id: user.id,
       email: user.email,
       name: user.name,
       role: user.role,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
     };
   }
 
@@ -52,7 +57,7 @@ export class AuthService {
     };
   }
 
-  async login(dto: LoginDto) {
+  async login(dto: LoginDto): Promise<LoginResponseDto> {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
@@ -78,6 +83,20 @@ export class AuthService {
 
     return {
       accessToken,
+      user: this.toPublicUser(user),
+    };
+  }
+
+  async getMe(userId: string): Promise<MeResponseDto> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    return {
       user: this.toPublicUser(user),
     };
   }
