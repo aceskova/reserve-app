@@ -112,8 +112,9 @@ The API currently supports email and password authentication.
 - `POST /v1/auth/login` verifies credentials and returns a JWT access token.
 - `GET /v1/auth/me` verifies a JWT access token and returns the current user.
 
-Web clients should store the access token in an HTTP-only cookie from the Next.js server layer.
-API and mobile clients can send the token with the `Authorization` header.
+Web clients store the access token in an HTTP-only cookie from the Next.js
+server layer. API and mobile clients can send the token with the
+`Authorization` header.
 
 Successful login response:
 
@@ -145,6 +146,15 @@ Browser-based web clients can use the HTTP-only cookie set by the Next.js server
 ```txt
 Cookie: accessToken=<accessToken>
 ```
+
+Web authentication flow:
+
+1. `POST /v1/auth/login` returns a JWT access token.
+2. The Next.js login server action stores the token in an HTTP-only
+   `accessToken` cookie.
+3. Server-rendered protected pages read the cookie and call
+   `GET /v1/auth/me`.
+4. Logout deletes the `accessToken` cookie and redirects the user to `/login`.
 
 Current user response:
 
