@@ -2,25 +2,39 @@
 
 import { useActionState } from "react";
 import {
-  type LoginActionState,
-  type LoginFields,
-  loginAction
+  registerAction,
+  type RegisterActionState,
+  type RegisterFields
 } from "../actions/auth";
 import { createInitialFormState } from "../../lib/form-state";
 
-const initialState: LoginActionState = createInitialFormState<LoginFields>();
+const initialState: RegisterActionState = createInitialFormState<RegisterFields>();
 
-export default function LoginForm() {
-  const [state, formAction, pending] = useActionState(loginAction, initialState);
+export default function RegisterForm() {
+  const [state, formAction, pending] = useActionState(registerAction, initialState);
 
   return (
     <main>
+      <h1>Registrace</h1>
+
       <form action={formAction}>
+        <label>
+          Jméno
+          <input
+            autoComplete="name"
+            name="name"
+            required
+            type="text"
+          />
+        </label>
+        {state.errors?.name && (
+          <p className="text-red-500">{state.errors.name}</p>
+        )}
+
         <label>
           Email
           <input
             name="email"
-            inputMode="email"
             required
             type="email"
             autoComplete="email"
@@ -29,13 +43,14 @@ export default function LoginForm() {
         {state.errors?.email && (
           <p className="text-red-500">{state.errors.email}</p>
         )}
+
         <label>
           Heslo
           <input
             name="password"
             required
             type="password"
-            autoComplete="current-password"
+            autoComplete="new-password"
           />
         </label>
         {state.errors?.password && (
@@ -43,7 +58,7 @@ export default function LoginForm() {
         )}
 
         <button type="submit" disabled={pending}>
-          {pending ? "Přihlašuji..." : "Přihlásit se"}
+          {pending ? "Registruji..." : "Registrovat se"}
         </button>
         {state.error && (
           <p className="text-red-500">{state.error}</p>
