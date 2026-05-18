@@ -4,14 +4,18 @@ import { useActionState } from "react";
 import {
   registerAction,
   type RegisterActionState,
-  type RegisterFields
+  type RegisterFields,
 } from "../actions/auth";
 import { createInitialFormState } from "../../lib/form-state";
 
-const initialState: RegisterActionState = createInitialFormState<RegisterFields>();
+const initialState: RegisterActionState =
+  createInitialFormState<RegisterFields>();
 
 export default function RegisterForm() {
-  const [state, formAction, pending] = useActionState(registerAction, initialState);
+  const [state, formAction, pending] = useActionState(
+    registerAction,
+    initialState,
+  );
 
   return (
     <main>
@@ -25,11 +29,14 @@ export default function RegisterForm() {
             name="name"
             required
             type="text"
+            defaultValue={state.values.name}
           />
         </label>
-        {state.errors?.name && (
-          <p className="text-red-500">{state.errors.name}</p>
-        )}
+        {state.errors.name?.map((error) => (
+          <p className="text-red-500" key={error}>
+            {error}
+          </p>
+        ))}
 
         <label>
           Email
@@ -38,11 +45,14 @@ export default function RegisterForm() {
             required
             type="email"
             autoComplete="email"
+            defaultValue={state.values.email}
           />
         </label>
-        {state.errors?.email && (
-          <p className="text-red-500">{state.errors.email}</p>
-        )}
+        {state.errors.email?.map((error) => (
+          <p className="text-red-500" key={error}>
+            {error}
+          </p>
+        ))}
 
         <label>
           Heslo
@@ -53,16 +63,16 @@ export default function RegisterForm() {
             autoComplete="new-password"
           />
         </label>
-        {state.errors?.password && (
-          <p className="text-red-500">{state.errors.password}</p>
-        )}
+        {state.errors.password?.map((error) => (
+          <p className="text-red-500" key={error}>
+            {error}
+          </p>
+        ))}
 
         <button type="submit" disabled={pending}>
           {pending ? "Registruji..." : "Registrovat se"}
         </button>
-        {state.error && (
-          <p className="text-red-500">{state.error}</p>
-        )}
+        {state.error && <p className="text-red-500">{state.error}</p>}
       </form>
     </main>
   );

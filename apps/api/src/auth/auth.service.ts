@@ -7,7 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { User } from '@repo/db';
+import { User, Prisma } from '@repo/db';
 import { JwtService } from '@nestjs/jwt';
 import {
   LoginResponseDto,
@@ -44,17 +44,28 @@ export class AuthService {
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
 
-    const user = await this.prisma.user.create({
-      data: {
-        email: dto.email,
-        name: dto.name,
-        passwordHash,
-      },
-    });
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          email: dto.email,
+          name: dto.name,
+          passwordHash,
+        },
+      });
 
-    return {
-      user: this.toPublicUser(user),
-    };
+      return {
+        user: this.toPublicUser(user),
+      };
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('Email is already registered');
+      }
+
+      throw error;
+    }
   }
 
   async login(dto: LoginDto): Promise<LoginResponseDto> {

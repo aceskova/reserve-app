@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { getApiUrl } from "../../lib/env";
 import type { LoginResponseDto } from "@repo/api-contracts";
 import { cookies } from "next/headers";
-
+import { loginSchema, registerSchema } from "../../lib/auth-schemas";
 import type { FormActionState } from "../../lib/form-state";
 
 export type LoginFields = "email" | "password";
@@ -13,52 +13,36 @@ export type RegisterFields = "email" | "password" | "name";
 export type LoginActionState = FormActionState<LoginFields>;
 export type RegisterActionState = FormActionState<RegisterFields>;
 
-
-
-export async function loginAction(_prevState: LoginActionState, formData: FormData): Promise<LoginActionState> {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-
-  const errors: LoginActionState['errors'] = {};
-
-  if (!email) {
-    errors.email = ["Email is required"];
-  }
-
-  if (!password) {
-    errors.password = ["Password is required"];
-  }
-
-  if (Object.keys(errors).length > 0) {
-    return { errors };
-  }
-
-  const response = await fetch(`${ getApiUrl() }/v1/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
+export async function loginAction(
+  _prevState: LoginActionState,
+  formData: FormData,
+): Promise<LoginActionState> {
+  const parsed = loginSchema.safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
   });
 
-  if (!response.ok) {
+  const values = {
+    email: String(formData.get("email") ?? ""),
+  };
+
+  if (!parsed.success) {
     return {
-      error: "Prihlaseni se nepodarilo.",
-      errors: {},
+      errors: parsed.error.flatten().fieldErrors,
+      values,
     };
   }
 
-  const result = (await response.json()) as LoginResponseDto;
+  const result = await postApi<LoginResponseDto>("/v1/auth/login", parsed.data);
 
-  const cookieStore = await cookies();
-
-  cookieStore.set("accessToken", result.accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 15 * 60,
-  });
+  if (!result) {
+    return {
+      error: "Prihlaseni se nepodarilo.",
+      errors: {},
+      values,
+    };
+  }
+  await setAccessTokenCookie(result.accessToken);
 
   redirect("/dashboard");
 }
@@ -71,43 +55,68 @@ export async function logoutAction() {
   redirect("/login");
 }
 
-export async function registerAction(_prevState: RegisterActionState, formData: FormData): Promise<RegisterActionState> {
-  const name = formData.get("name") as string;
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-
-  const errors: RegisterActionState['errors'] = {};
-
-  if (!name) {
-    errors.name = ["Name is required"];
-  }
-
-  if (!email) {
-    errors.email = ["Email is required"];
-  }
-
-  if (!password) {
-    errors.password = ["Password is required"];
-  }
-
-  if (Object.keys(errors).length > 0) {
-    return { errors };
-  }
-
-  const response = await fetch(`${ getApiUrl() }/v1/auth/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ name, email, password }),
+export async function registerAction(
+  _prevState: RegisterActionState,
+  formData: FormData,
+): Promise<RegisterActionState> {
+  const parsed = registerSchema.safeParse({
+    name: formData.get("name"),
+    email: formData.get("email"),
+    password: formData.get("password"),
   });
 
-  if (!response.ok) {
+  const values = {
+    name: String(formData.get("name") ?? ""),
+    email: String(formData.get("email") ?? ""),
+  };
+
+  if (!parsed.success) {
+    return {
+      errors: parsed.error.flatten().fieldErrors,
+      values,
+    };
+  }
+
+  const result = await postApi("/v1/auth/register", parsed.data);
+
+  if (!result) {
     return {
       error: "Registrace se nepodarila.",
       errors: {},
+      values,
     };
   }
 
   redirect("/login?message=registered");
+}
+
+async function postApi<TResponse>(
+  path: string,
+  body: unknown,
+): Promise<TResponse | null> {
+  const response = await fetch(`${getApiUrl()}${path}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  return response.json() as Promise<TResponse>;
+}
+
+async function setAccessTokenCookie(accessToken: string) {
+  const cookieStore = await cookies();
+
+  cookieStore.set("accessToken", accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 15 * 60,
+  });
 }

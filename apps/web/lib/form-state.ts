@@ -1,6 +1,7 @@
 export type FormActionState<TFields extends string = string> = {
   error?: string;
   errors: Partial<Record<TFields, string[]>>;
+  values: Partial<Record<TFields, string>>;
 };
 
 export function createInitialFormState<
@@ -8,5 +9,6 @@ export function createInitialFormState<
 >(): FormActionState<TFields> {
   return {
     errors: {},
+    values: {},
   };
 }
