@@ -10,6 +10,7 @@ export default function Home() {
         <p>Rezervacni system pro trenery a klienty.</p>
 
         <Link href="/login">Prihlasit se</Link>
+        <Link href="/register">Registrovat se</Link>
       </main>
     </div>
   );

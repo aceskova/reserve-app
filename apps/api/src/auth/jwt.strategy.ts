@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import type { JwtPayload } from './types/jwt-payload';
+import type { Request } from 'express';
 
 type RequestWithCookies = Request & {
   cookies?: {

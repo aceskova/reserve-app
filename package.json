@@ -22,6 +22,8 @@
     "web:format": "yarn workspace web format",
     "web:build": "yarn workspace web build",
     "web:dev": "yarn workspace web dev",
+    "contracts:build": "yarn workspace @repo/api-contracts build",
+    "contracts:check-types": "yarn workspace @repo/api-contracts check-types",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"

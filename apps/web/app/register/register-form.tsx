@@ -2,28 +2,46 @@
 
 import { useActionState } from "react";
 import {
-  type LoginActionState,
-  type LoginFields,
-  loginAction,
+  registerAction,
+  type RegisterActionState,
+  type RegisterFields,
 } from "../actions/auth";
 import { createInitialFormState } from "../../lib/form-state";
 
-const initialState: LoginActionState = createInitialFormState<LoginFields>();
+const initialState: RegisterActionState =
+  createInitialFormState<RegisterFields>();
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const [state, formAction, pending] = useActionState(
-    loginAction,
+    registerAction,
     initialState,
   );
 
   return (
     <main>
+      <h1>Registrace</h1>
+
       <form action={formAction}>
+        <label>
+          Jméno
+          <input
+            autoComplete="name"
+            name="name"
+            required
+            type="text"
+            defaultValue={state.values.name}
+          />
+        </label>
+        {state.errors.name?.map((error) => (
+          <p className="text-red-500" key={error}>
+            {error}
+          </p>
+        ))}
+
         <label>
           Email
           <input
             name="email"
-            inputMode="email"
             required
             type="email"
             autoComplete="email"
@@ -35,13 +53,14 @@ export default function LoginForm() {
             {error}
           </p>
         ))}
+
         <label>
           Heslo
           <input
             name="password"
             required
             type="password"
-            autoComplete="current-password"
+            autoComplete="new-password"
           />
         </label>
         {state.errors.password?.map((error) => (
@@ -51,7 +70,7 @@ export default function LoginForm() {
         ))}
 
         <button type="submit" disabled={pending}>
-          {pending ? "Přihlašuji..." : "Přihlásit se"}
+          {pending ? "Registruji..." : "Registrovat se"}
         </button>
         {state.error && <p className="text-red-500">{state.error}</p>}
       </form>
