@@ -7,6 +7,10 @@ import {
   loginAction,
 } from "../actions/auth";
 import { createInitialFormState } from "../../lib/form-state";
+import { Input } from "../../components/input";
+import { Button } from "../../components/button";
+import { FieldError } from "../../components/field-error";
+import { FormError } from "../../components/form-error";
 
 const initialState: LoginActionState = createInitialFormState<LoginFields>();
 
@@ -17,44 +21,39 @@ export default function LoginForm() {
   );
 
   return (
-    <main>
-      <form action={formAction}>
-        <label>
+    <form action={formAction} className="space-y-5" noValidate>
+      <label className="block">
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
           Email
-          <input
-            name="email"
-            inputMode="email"
-            required
-            type="email"
-            autoComplete="email"
-            defaultValue={state.values.email}
-          />
-        </label>
-        {state.errors.email?.map((error) => (
-          <p className="text-red-500" key={error}>
-            {error}
-          </p>
-        ))}
-        <label>
-          Heslo
-          <input
-            name="password"
-            required
-            type="password"
-            autoComplete="current-password"
-          />
-        </label>
-        {state.errors.password?.map((error) => (
-          <p className="text-red-500" key={error}>
-            {error}
-          </p>
-        ))}
+        </span>
+        <Input
+          name="email"
+          inputMode="email"
+          required
+          type="email"
+          autoComplete="email"
+          defaultValue={state.values.email}
+        />
+      </label>
+      <FieldError errors={state.errors.email} />
 
-        <button type="submit" disabled={pending}>
-          {pending ? "Přihlašuji..." : "Přihlásit se"}
-        </button>
-        {state.error && <p className="text-red-500">{state.error}</p>}
-      </form>
-    </main>
+      <label className="block">
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+          Heslo
+        </span>
+        <Input
+          name="password"
+          required
+          type="password"
+          autoComplete="current-password"
+        />
+      </label>
+      <FieldError errors={state.errors.password} />
+
+      <Button className="w-full" type="submit" disabled={pending}>
+        {pending ? "Přihlašuji..." : "Přihlásit se"}
+      </Button>
+      <FormError message={state.error} />
+    </form>
   );
 }
