@@ -6,6 +6,7 @@ import type { LoginResponseDto } from "@repo/api-contracts";
 import { cookies } from "next/headers";
 import { loginSchema, registerSchema } from "../../lib/auth-schemas";
 import type { FormActionState } from "../../lib/form-state";
+import { z } from "zod";
 
 export type LoginFields = "email" | "password";
 export type RegisterFields = "email" | "password" | "name";
@@ -28,7 +29,7 @@ export async function loginAction(
 
   if (!parsed.success) {
     return {
-      errors: parsed.error.flatten().fieldErrors,
+      errors: getFieldErrors<LoginFields>(parsed.error),
       values,
     };
   }
@@ -66,13 +67,17 @@ export async function registerAction(
   });
 
   const values = {
-    name: String(formData.get("name") ?? ""),
-    email: String(formData.get("email") ?? ""),
+    name: String(formData.get("name") ?? "").trim(),
+    email: String(formData.get("email") ?? "")
+      .trim()
+      .toLowerCase(),
   };
 
   if (!parsed.success) {
+    const errors = getFieldErrors<RegisterFields>(parsed.error);
+
     return {
-      errors: parsed.error.flatten().fieldErrors,
+      errors,
       values,
     };
   }
@@ -119,4 +124,8 @@ async function setAccessTokenCookie(accessToken: string) {
     path: "/",
     maxAge: 15 * 60,
   });
+}
+
+function getFieldErrors<T extends string>(error: z.ZodError) {
+  return z.flattenError(error).fieldErrors as Partial<Record<T, string[]>>;
 }
