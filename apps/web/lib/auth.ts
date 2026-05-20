@@ -14,7 +14,7 @@ export async function getCurrentUser(): Promise<PublicUserDto | null> {
 
   const response = await fetch(`${getApiUrl()}/v1/auth/me`, {
     headers: {
-      Authorization: `Bearer ${ accessToken }`,
+      Authorization: `Bearer ${accessToken}`,
     },
     cache: "no-store",
   });
