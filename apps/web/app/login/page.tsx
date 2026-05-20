@@ -1,3 +1,4 @@
+import { Card } from "../../components/card";
 import LoginForm from "./login-form";
 
 type LoginPageProps = {
@@ -11,7 +12,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <main className="mx-auto max-w-md px-6 py-12">
-      <section className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <Card className="mt-8">
         <h1 className="text-3xl font-bold tracking-tight text-gray-950 dark:text-gray-50">
           Přihlášení
         </h1>
@@ -29,7 +30,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <div className="mt-8">
           <LoginForm />
         </div>
-      </section>
+      </Card>
     </main>
   );
 }
