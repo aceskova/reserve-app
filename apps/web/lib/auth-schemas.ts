@@ -24,7 +24,10 @@ export const registerSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(AUTH_NAME_MIN_LENGTH, `Jmeno musi mit alespon ${AUTH_NAME_MIN_LENGTH} znaky.`)
+    .min(
+      AUTH_NAME_MIN_LENGTH,
+      `Jmeno musi mit alespon ${AUTH_NAME_MIN_LENGTH} znaky.`,
+    )
     .max(AUTH_NAME_MAX_LENGTH, "Jmeno je prilis dlouhe."),
   email: z
     .string()

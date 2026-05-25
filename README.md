@@ -66,6 +66,54 @@ yarn lint
 yarn build
 ```
 
+## End-to-End Tests
+
+The web app uses Playwright for browser-level end-to-end tests.
+
+The current e2e coverage verifies that a user can log in, reach the protected
+dashboard, and see the authenticated user summary.
+
+Create a local e2e environment file from the example:
+
+```sh
+cp apps/web/.env.e2e.example apps/web/.env.e2e
+```
+
+Required variables:
+
+```env
+E2E_USER_EMAIL="test@example.com"
+E2E_USER_PASSWORD="change-me"
+```
+
+Run the web e2e tests locally:
+
+```sh
+yarn web:test:e2e
+```
+
+Open the Playwright UI runner:
+
+```sh
+yarn web:test:e2e:ui
+```
+
+Run the login test in a visible browser:
+
+```sh
+yarn web:test:e2e:headed
+```
+
+Run e2e tests against the deployed web app:
+
+```sh
+yarn web:test:e2e:prod
+```
+
+Local e2e runs start the web app and API automatically when they are not already
+running. Production e2e runs use `PLAYWRIGHT_BASE_URL` and do not start local
+servers.
+
 ## Deploy
 
 ### Web

@@ -3,8 +3,11 @@ import { Card } from "../../components/card";
 
 export function UserSummary({ user }: { user: PublicUserDto }) {
   return (
-    <Card>
-      <h2 className="text-lg font-semibold text-gray-950 dark:text-gray-50">
+    <Card role="region" aria-labelledby="user-summary-title">
+      <h2
+        id="user-summary-title"
+        className="text-lg font-semibold text-gray-950 dark:text-gray-50"
+      >
         Přihlášený uživatel
       </h2>
 
