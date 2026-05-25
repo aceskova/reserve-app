@@ -21,12 +21,14 @@ test("user can log in and see dashboard", async ({ page }) => {
     name: "Přihlášený uživatel",
   });
 
-  await expect(userSummary.getByText("Jméno")).toBeVisible();
-  await expect(userSummary.getByText("Test User")).toBeVisible();
+  await expect(userSummary.getByText("Jméno", { exact: true })).toBeVisible();
+  await expect(
+    userSummary.getByText("Test User", { exact: true }),
+  ).toBeVisible();
 
-  await expect(userSummary.getByText("Email")).toBeVisible();
-  await expect(userSummary.getByText(email)).toBeVisible();
+  await expect(userSummary.getByText("Email", { exact: true })).toBeVisible();
+  await expect(userSummary.getByText(email, { exact: true })).toBeVisible();
 
-  await expect(userSummary.getByText("Role")).toBeVisible();
-  await expect(userSummary.getByText("USER")).toBeVisible();
+  await expect(userSummary.getByText("Role", { exact: true })).toBeVisible();
+  await expect(userSummary.getByText("USER", { exact: true })).toBeVisible();
 });
