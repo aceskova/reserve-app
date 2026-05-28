@@ -120,6 +120,7 @@ servers.
 
 Deploy `apps/web` to Vercel.
 
+- Production: `https://reserve-app-web.vercel.app`
 - Root directory: `apps/web`
 - Install command: `yarn install`
 - Build command: `yarn build`
