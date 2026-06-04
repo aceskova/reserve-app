@@ -9,7 +9,8 @@ it("renders nothing when message is missing", () => {
 });
 
 it("renders the error message", () => {
-  render(<FormError message="Přihlášení se nepodařilo." />);
+  const errorMessage = "Přihlášení se nepodařilo.";
+  render(<FormError message={errorMessage} />);
 
-  expect(screen.getByText("Přihlášení se nepodařilo.")).toBeInTheDocument();
+  expect(screen.getByText(errorMessage)).toBeInTheDocument();
 });

@@ -9,14 +9,18 @@ it("renders nothing when errors are missing", () => {
 });
 
 it("renders field errors", () => {
-  render(<FieldError errors={["Zadej platný email."]} />);
+  const errorMessage = "Zadej platný email.";
+  render(<FieldError errors={[errorMessage]} />);
 
-  expect(screen.getByText("Zadej platný email.")).toBeInTheDocument();
+  expect(screen.getByText(errorMessage)).toBeInTheDocument();
 });
 
 it("renders multiple field errors", () => {
-  render(<FieldError errors={["První chyba.", "Druhá chyba."]} />);
+  const errorMessage1 = "První chyba.";
+  const errorMessage2 = "Druhá chyba.";
 
-  expect(screen.getByText("První chyba.")).toBeInTheDocument();
-  expect(screen.getByText("Druhá chyba.")).toBeInTheDocument();
+  render(<FieldError errors={[errorMessage1, errorMessage2]} />);
+
+  expect(screen.getByText(errorMessage1)).toBeInTheDocument();
+  expect(screen.getByText(errorMessage2)).toBeInTheDocument();
 });
