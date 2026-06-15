@@ -2,7 +2,7 @@ name: Keep Supabase active
 
 on:
   schedule:
-    - cron: "0 8 * * 1,4"
+    - cron: "0 6 * * *"
   workflow_dispatch:
 
 jobs:
@@ -12,6 +12,11 @@ jobs:
     steps:
       - name: Ping Supabase database
         run: |
-          curl -f "${{ secrets.SUPABASE_URL }}/rest/v1/health_check?select=id&limit=1" \
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          curl -f -X PATCH "${{ secrets.SUPABASE_URL }}/rest/v1/health_check?id=eq.1" \
             -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=representation" \
+            -d "{\"last_ping\":\"$NOW\"}"
