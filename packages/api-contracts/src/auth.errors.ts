@@ -1,0 +1,14 @@
+export const AUTH_ERROR_CODES = {
+  EMAIL_ALREADY_EXISTS: "AUTH_EMAIL_ALREADY_EXISTS",
+  INVALID_CREDENTIALS: "AUTH_INVALID_CREDENTIALS",
+  USER_NOT_FOUND: "AUTH_USER_NOT_FOUND",
+} as const;
+
+export type AuthErrorCode =
+  (typeof AUTH_ERROR_CODES)[keyof typeof AUTH_ERROR_CODES];
+
+export type ApiErrorResponse<TCode extends string = string> = {
+  statusCode: number;
+  code?: TCode;
+  message: string;
+};
