@@ -2,6 +2,7 @@ import {
   Injectable,
   ConflictException,
   UnauthorizedException,
+  HttpStatus,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
@@ -14,6 +15,7 @@ import {
   MeResponseDto,
   PublicUserDto,
 } from './dto/auth-response.dto';
+import { AUTH_ERROR_CODES } from '@repo/api-contracts';
 
 @Injectable()
 export class AuthService {
@@ -39,7 +41,7 @@ export class AuthService {
     });
 
     if (existingUser) {
-      throw new ConflictException('Email is already registered');
+      throw this.emailAlreadyRegisteredException();
     }
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
@@ -61,7 +63,7 @@ export class AuthService {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
-        throw new ConflictException('Email is already registered');
+        throw this.emailAlreadyRegisteredException();
       }
 
       throw error;
@@ -74,7 +76,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw this.invalidCredentialsException();
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -83,7 +85,7 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw this.invalidCredentialsException();
     }
 
     const accessToken = await this.jwtService.signAsync({
@@ -104,11 +106,31 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException({
+        statusCode: HttpStatus.UNAUTHORIZED,
+        code: AUTH_ERROR_CODES.USER_NOT_FOUND,
+        message: 'User not found',
+      });
     }
 
     return {
       user: this.toPublicUser(user),
     };
+  }
+
+  private emailAlreadyRegisteredException() {
+    return new ConflictException({
+      statusCode: HttpStatus.CONFLICT,
+      code: AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS,
+      message: 'Email is already registered',
+    });
+  }
+
+  private invalidCredentialsException() {
+    return new UnauthorizedException({
+      statusCode: HttpStatus.UNAUTHORIZED,
+      code: AUTH_ERROR_CODES.INVALID_CREDENTIALS,
+      message: 'Invalid email or password',
+    });
   }
 }
