@@ -8,19 +8,44 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
+  id           String   @id @default(uuid()) @db.Uuid
   email        String   @unique
   name         String
   passwordHash String
   role         Role     @default(USER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  createdTrainingSessions TrainingSession[] @relation("TrainerSessions")
 }
 
 enum Role {
   USER
   TRAINER
   ADMIN
+}
+
+model HealthCheck {
+  id        Int       @id
+  note      String?
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz
+  lastPing  DateTime? @map("last_ping") @db.Timestamptz
+
+  @@map("health_check")
+}
+
+model TrainingSession {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
+  description String
+  trainerId   String   @db.Uuid
+  startsAtUtc DateTime
+  endsAtUtc   DateTime
+  capacity    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  trainer User @relation("TrainerSessions", fields: [trainerId], references: [id])
 }
 
 // TrainingSession
