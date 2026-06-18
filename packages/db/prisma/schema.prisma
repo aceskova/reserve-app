@@ -9,12 +9,12 @@ datasource db {
 
 model User {
   id           String   @id @default(uuid()) @db.Uuid
-  email        String   @unique
-  name         String
-  passwordHash String
+  email        String   @unique @db.VarChar(254)
+  name         String   @db.VarChar(100)
+  passwordHash String   @db.VarChar(255)
   role         Role     @default(USER)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now()) @db.Timestamptz
+  updatedAt    DateTime @updatedAt @db.Timestamptz
 
   createdTrainingSessions TrainingSession[] @relation("TrainerSessions")
 }
@@ -36,29 +36,22 @@ model HealthCheck {
 
 model TrainingSession {
   id          String   @id @default(uuid()) @db.Uuid
-  title       String
-  description String
+  title       String   @db.VarChar(120)
+  description String?  @db.VarChar(1000)
   trainerId   String   @db.Uuid
-  startsAtUtc DateTime
-  endsAtUtc   DateTime
+  startsAtUtc DateTime @db.Timestamptz
+  endsAtUtc   DateTime @db.Timestamptz
   capacity    Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  priceCents  Int
+  currency    String   @default("CZK") @db.Char(3)
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
 
   trainer User @relation("TrainerSessions", fields: [trainerId], references: [id])
-}
 
-// TrainingSession
-// id (uuid)
-// title
-// description
-// trainerId (FK -> User)
-// startsAtUtc
-// endsAtUtc
-// capacity
-// //location
-// createdAt
-// updatedAt
+  @@index([startsAtUtc])
+  @@index([trainerId, startsAtUtc])
+}
 
 // Reservation
 // id (uuid)
