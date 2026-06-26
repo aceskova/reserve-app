@@ -6,9 +6,3 @@ export const AUTH_ERROR_CODES = {
 
 export type AuthErrorCode =
   (typeof AUTH_ERROR_CODES)[keyof typeof AUTH_ERROR_CODES];
-
-export type ApiErrorResponse<TCode extends string = string> = {
-  statusCode: number;
-  code?: TCode;
-  message: string;
-};
