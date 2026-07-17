@@ -2,10 +2,10 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "../../lib/auth";
 import { DashboardHeader } from "./dashboard-header";
 import { DashboardStats } from "./dashboard-stats";
-import { ReservationsPreview } from "./reservations-preview";
 import { QuickActions } from "./quick-actions";
 import { UserSummary } from "./user-summary";
 import { LogoutForm } from "./logout-form";
+import { UpcomingTrainingSessions } from "./upcoming-training-sessions";
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
@@ -21,7 +21,7 @@ export default async function DashboardPage() {
       <DashboardStats userRole={user.role} />
 
       <section className="mt-6 grid gap-6 lg:grid-cols-[2fr_1fr]">
-        <ReservationsPreview />
+        <UpcomingTrainingSessions />
 
         <div className="space-y-6">
           <QuickActions />
