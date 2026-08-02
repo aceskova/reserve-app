@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+# Reserve App Web
 
-## Getting Started
+Next.js web client for Reserve App.
 
-First, run the development server:
+## Local Development
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Run from the repository root:
+
+```sh
+yarn web:dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Or from this workspace:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+yarn dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Inter, a custom Google Font.
+The web app runs on:
 
-## Learn More
+```txt
+http://localhost:3002
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- public home page
+- login and registration forms
+- HTTP-only cookie based web session
+- protected dashboard
+- training sessions preview on the dashboard
+- training sessions overview page
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Environment
 
-## Deploy on Vercel
+For local web/API communication, set the API URL in an ignored env file when
+needed:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```env
+API_URL="http://localhost:3000"
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+E2E test credentials live in `apps/web/.env.e2e`, created from
+`apps/web/.env.e2e.example`.
+
+## Checks
+
+Run from the repository root:
+
+```sh
+yarn web:check-types
+yarn web:lint
+yarn web:test
+yarn web:test:e2e
+```
+
+## Testing
+
+Vitest and React Testing Library are used for component-level tests.
+
+Playwright is used for browser e2e flows and API-level smoke tests against the
+running application.
