@@ -10,11 +10,16 @@ const DASHBOARD_COPY = {
     title: "Nadcházející lekce",
     description: "Nejbližší lekce vypsané v rozvrhu.",
     empty: "Zatím nejsou vypsané žádné nadcházející lekce.",
+    addNew: "Nová lekce",
     viewAll: "Zobrazit všechny →",
   },
 } as const;
 
-export async function UpcomingTrainingSessions() {
+type UpcomingTrainingSessionsProps = {
+  canCreateTrainingSession: boolean;
+};
+
+export async function UpcomingTrainingSessions({ canCreateTrainingSession }: UpcomingTrainingSessionsProps) {
   const trainingSessions = await getTrainingSessions();
   const now = new Date();
 
@@ -33,12 +38,24 @@ export async function UpcomingTrainingSessions() {
             {DASHBOARD_COPY.upcomingTrainingSessions.description}
           </p>
         </div>
-        <Link
-          href="/training-sessions"
-          className="inline-flex items-center justify-center rounded-md border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-800 transition-colors hover:bg-gray-100 hover:text-gray-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-800"
-        >
-          {DASHBOARD_COPY.upcomingTrainingSessions.viewAll}
-        </Link>
+
+        <div className="flex shrink-0 items-center gap-2">
+          {canCreateTrainingSession && (
+            <Link
+              href="/training-sessions/new"
+              className="inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400"
+            >
+              <span aria-hidden="true">+</span>
+              <span>{DASHBOARD_COPY.upcomingTrainingSessions.addNew}</span>
+            </Link>
+          )}
+          <Link
+            href="/training-sessions"
+            className="inline-flex items-center justify-center rounded-md border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-800 transition-colors hover:bg-gray-100 hover:text-gray-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-800"
+          >
+            {DASHBOARD_COPY.upcomingTrainingSessions.viewAll}
+          </Link>
+        </div>
       </div>
 
       {upcomingTrainingSessions.length === 0 ? (
