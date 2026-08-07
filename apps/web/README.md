@@ -30,6 +30,7 @@ http://localhost:3002
 - protected dashboard
 - training sessions preview on the dashboard
 - training sessions overview page
+- role-protected training session creation form
 
 ## Environment
 

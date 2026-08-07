@@ -1,7 +1,6 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { getApiUrl } from "../../lib/env";
 import {
   AUTH_ERROR_CODES,
   type ApiErrorResponse,
@@ -13,6 +12,7 @@ import { cookies } from "next/headers";
 import { loginSchema, registerSchema } from "../../lib/auth-schemas";
 import type { FormActionState } from "../../lib/form-state";
 import { z } from "zod";
+import { sendPublicRequest } from "../../lib/api-client";
 
 export type LoginFields = "email" | "password";
 export type RegisterFields = "email" | "password" | "name";
@@ -47,14 +47,15 @@ export async function loginAction(
     };
   }
 
-  const result = await postApi<LoginResponseDto>("/v1/auth/login", parsed.data);
+  const result = await sendPublicRequest<LoginResponseDto>({
+    method: "POST",
+    path: "/v1/auth/login",
+    body: parsed.data,
+  });
 
   if (!result.ok) {
     return {
-      error: getAuthApiErrorMessage(
-        result.error,
-        "Přihlášení se nepodařilo.",
-      ),
+      error: getAuthApiErrorMessage(result.error, "Přihlášení se nepodařilo."),
       errors: {},
       values,
     };
@@ -98,52 +99,21 @@ export async function registerAction(
     };
   }
 
-  const result = await postApi<RegisterResponseDto>(
-    "/v1/auth/register",
-    parsed.data,
-  );
+  const result = await sendPublicRequest<RegisterResponseDto>({
+    method: "POST",
+    path: "/v1/auth/register",
+    body: parsed.data,
+  });
 
   if (!result.ok) {
     return {
-      error: getAuthApiErrorMessage(
-        result.error,
-        "Registrace se nepodařila.",
-      ),
+      error: getAuthApiErrorMessage(result.error, "Registrace se nepodařila."),
       errors: {},
       values,
     };
   }
 
   redirect("/login?message=registered");
-}
-
-async function postApi<TResponse>(
-  path: string,
-  body: unknown,
-): Promise<
-  | { ok: true; data: TResponse }
-  | { ok: false; error: ApiErrorResponse | null }
-> {
-  const response = await fetch(`${getApiUrl()}${path}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!response.ok) {
-    const error = (await response.json().catch(() => null)) as
-      | ApiErrorResponse
-      | null;
-
-    return { ok: false, error };
-  }
-
-  return {
-    ok: true,
-    data: (await response.json()) as TResponse,
-  };
 }
 
 async function setAccessTokenCookie(accessToken: string) {

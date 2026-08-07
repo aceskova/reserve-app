@@ -14,6 +14,9 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  const canCreateTrainingSession =
+    user.role === "TRAINER" || user.role === "ADMIN";
+
   return (
     <main className="mx-auto max-w-6xl px-6 py-12">
       <DashboardHeader userName={user.name} />
@@ -21,7 +24,9 @@ export default async function DashboardPage() {
       <DashboardStats userRole={user.role} />
 
       <section className="mt-6 grid gap-6 lg:grid-cols-[2fr_1fr]">
-        <UpcomingTrainingSessions />
+        <UpcomingTrainingSessions
+          canCreateTrainingSession={canCreateTrainingSession}
+        />
 
         <div className="space-y-6">
           <QuickActions />
