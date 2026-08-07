@@ -4,7 +4,7 @@ Turborepo monorepo for a reservation system built as a portfolio full-stack proj
 
 The app currently includes email/password authentication, JWT-based API access,
 HTTP-only cookie sessions for the web client, a protected dashboard, training
-session listing, Swagger API documentation, and Playwright tests.
+session listing and creation, Swagger API documentation, and Playwright tests.
 
 ## Apps And Packages
 
@@ -288,7 +288,9 @@ Web authentication flow:
    `accessToken` cookie.
 3. Server-rendered protected pages read the cookie and call
    `GET /v1/auth/me`.
-4. Logout deletes the `accessToken` cookie and redirects the user to `/login`.
+4. Authenticated web server actions read the same cookie and forward the JWT to
+   protected API endpoints through the `Authorization` header.
+5. Logout deletes the `accessToken` cookie and redirects the user to `/login`.
 
 ## Training Sessions API
 
@@ -305,6 +307,9 @@ POST /v1/training-sessions      -> 201 Created
 - `GET /v1/training-sessions/:id` returns one training session.
 - `POST /v1/training-sessions` creates a training session and requires a valid
   JWT. Only users with role `TRAINER` or `ADMIN` can create training sessions.
+- The web client exposes a role-protected `/training-sessions/new` page for
+  creating training sessions. Preset durations are calculated server-side before
+  sending `startsAtUtc` and `endsAtUtc` to the API.
 
 Training session response shape:
 

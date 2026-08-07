@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Card } from "../../../components/card";
 import { getCurrentUser } from "../../../lib/auth";
+import { TrainingSessionForm } from "./training-session-form";
 
 const NEW_TRAINING_SESSION_COPY = {
   forbidden: {
@@ -52,13 +53,13 @@ export default async function NewTrainingSessionPage() {
   return (
     <main className="mx-auto max-w-2xl px-6 py-12">
       <Card>
-        <h1 className="text-3xl font-bold tracking-tight text-gray-950 dark:text-gray-50">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-950 dark:text-gray-50 mb-3">
           {NEW_TRAINING_SESSION_COPY.page.title}
         </h1>
 
-        <p className="mt-3 text-gray-600 dark:text-gray-400">
-          {NEW_TRAINING_SESSION_COPY.page.description}
-        </p>
+        <div className="mt-8">
+          <TrainingSessionForm />
+        </div>
       </Card>
     </main>
   );

@@ -20,6 +20,8 @@ const TRAINING_SESSION_FORM_MESSAGES = {
   currencyInvalid: "Měna musí mít 3 znaky.",
 } as const;
 
+const durationOptionSchema = z.enum(["45", "60", "90", "custom"]);
+
 const titleSchema = z
   .string()
   .trim()
@@ -34,7 +36,7 @@ const descriptionSchema = z
   .max(TRAINING_SESSION_DESCRIPTION_MAX_LENGTH, {
     message: TRAINING_SESSION_FORM_MESSAGES.descriptionTooLong,
   })
-  .optional();
+  .transform((value) => (value === "" ? undefined : value));
 
 function isValidDateTimeLocal(value: string) {
   return !Number.isNaN(new Date(value).getTime());
@@ -47,12 +49,7 @@ const startsAtSchema = z
     message: TRAINING_SESSION_FORM_MESSAGES.invalidDate,
   });
 
-const endsAtSchema = z
-  .string()
-  .min(1, { message: TRAINING_SESSION_FORM_MESSAGES.endsAtRequired })
-  .refine(isValidDateTimeLocal, {
-    message: TRAINING_SESSION_FORM_MESSAGES.invalidDate,
-  });
+const endsAtSchema = z.string().optional();
 
 const capacitySchema = z
   .string()
@@ -84,15 +81,39 @@ export const trainingSessionSchema = z
     description: descriptionSchema,
     startsAt: startsAtSchema,
     endsAt: endsAtSchema,
+    durationOption: durationOptionSchema,
     capacity: capacitySchema,
     price: priceSchema,
     currency: currencySchema,
   })
-  .refine(
-    (data) =>
-      new Date(data.endsAt).getTime() > new Date(data.startsAt).getTime(),
-    {
-      message: TRAINING_SESSION_FORM_MESSAGES.invalidTimeRange,
-      path: ["endsAt"],
-    },
-  );
+  .superRefine((data, context) => {
+    if (data.durationOption !== "custom") {
+      return;
+    }
+
+    if (!data.endsAt) {
+      context.addIssue({
+        code: "custom",
+        path: ["endsAt"],
+        message: TRAINING_SESSION_FORM_MESSAGES.endsAtRequired,
+      });
+      return;
+    }
+
+    if (!isValidDateTimeLocal(data.endsAt)) {
+      context.addIssue({
+        code: "custom",
+        path: ["endsAt"],
+        message: TRAINING_SESSION_FORM_MESSAGES.invalidDate,
+      });
+      return;
+    }
+
+    if (new Date(data.endsAt).getTime() <= new Date(data.startsAt).getTime()) {
+      context.addIssue({
+        code: "custom",
+        path: ["endsAt"],
+        message: TRAINING_SESSION_FORM_MESSAGES.invalidTimeRange,
+      });
+    }
+  });
