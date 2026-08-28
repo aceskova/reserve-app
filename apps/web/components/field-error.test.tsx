@@ -1,26 +1,28 @@
 import { render, screen } from "@testing-library/react";
-import { expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { FieldError } from "./field-error";
 
-it("renders nothing when errors are missing", () => {
-  const { container } = render(<FieldError />);
+describe("FieldError", () => {
+  it("renders nothing when errors are missing", () => {
+    const { container } = render(<FieldError />);
 
-  expect(container).toBeEmptyDOMElement();
-});
+    expect(container).toBeEmptyDOMElement();
+  });
 
-it("renders field errors", () => {
-  const errorMessage = "Zadej platný email.";
-  render(<FieldError errors={[errorMessage]} />);
+  it("renders field errors", () => {
+    const errorMessage = "Zadej platný email.";
+    render(<FieldError errors={[errorMessage]} />);
 
-  expect(screen.getByText(errorMessage)).toBeInTheDocument();
-});
+    expect(screen.getByText(errorMessage)).toBeInTheDocument();
+  });
 
-it("renders multiple field errors", () => {
-  const errorMessage1 = "První chyba.";
-  const errorMessage2 = "Druhá chyba.";
+  it("renders multiple field errors", () => {
+    const errorMessage1 = "První chyba.";
+    const errorMessage2 = "Druhá chyba.";
 
-  render(<FieldError errors={[errorMessage1, errorMessage2]} />);
+    render(<FieldError errors={[errorMessage1, errorMessage2]} />);
 
-  expect(screen.getByText(errorMessage1)).toBeInTheDocument();
-  expect(screen.getByText(errorMessage2)).toBeInTheDocument();
+    expect(screen.getByText(errorMessage1)).toBeInTheDocument();
+    expect(screen.getByText(errorMessage2)).toBeInTheDocument();
+  });
 });

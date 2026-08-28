@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 import dotenv from "dotenv";
 
-dotenv.config({ path: ".env.e2e" });
+dotenv.config({ path: ".env.e2e", quiet: true });
 
 const isCi = Boolean(process.env.CI);
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3002";

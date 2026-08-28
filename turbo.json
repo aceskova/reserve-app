@@ -8,7 +8,9 @@
     "PLAYWRIGHT_API_URL",
     "PLAYWRIGHT_BASE_URL",
     "E2E_USER_EMAIL",
-    "E2E_USER_PASSWORD"
+    "E2E_USER_PASSWORD",
+    "E2E_TRAINER_EMAIL",
+    "E2E_TRAINER_PASSWORD"
   ],
   "ui": "tui",
   "tasks": {
