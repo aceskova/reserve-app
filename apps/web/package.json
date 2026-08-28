@@ -10,7 +10,7 @@
     "lint": "eslint --max-warnings 0",
     "lint:fix": "eslint --fix",
     "check-types": "next typegen && tsc --noEmit",
-    "test": "vitest --run",
+    "test": "vitest --run --reporter=verbose",
     "test:watch": "vitest --watch",
     "test:e2e": "playwright test"
   },

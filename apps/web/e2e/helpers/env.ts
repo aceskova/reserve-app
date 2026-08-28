@@ -11,3 +11,17 @@ export function getE2EUser() {
     password,
   };
 }
+
+export function getE2ETrainer() {
+  const email = process.env.E2E_TRAINER_EMAIL;
+  const password = process.env.E2E_TRAINER_PASSWORD;
+
+  if (!email || !password) {
+    throw new Error("E2E_TRAINER_EMAIL and E2E_TRAINER_PASSWORD must be set");
+  }
+
+  return {
+    email,
+    password,
+  };
+}
